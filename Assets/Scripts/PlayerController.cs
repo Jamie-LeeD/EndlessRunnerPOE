@@ -31,39 +31,42 @@ public class PlayerController : MonoBehaviour
             Vector3 targetPosition = new Vector3(positions[currentPosIndex], rb.position.y, rb.position.z);
 
             // Move rigidbody
-            rb.MovePosition(Vector3.Lerp(rb.position + forwardMovement, targetPosition + forwardMovement, runSpeed * Time.fixedDeltaTime)); 
-        }
+            rb.MovePosition(Vector3.Lerp(rb.position + forwardMovement, targetPosition + forwardMovement, runSpeed * Time.fixedDeltaTime));
 
-        if (rb.linearVelocity.y < 0)
-        {
-            rb.linearVelocity += Vector3.up * Physics.gravity.y * (fallMultiplier - 1) * Time.fixedDeltaTime;
-        }
-        else if (rb.linearVelocity.y > 0 && !Input.GetKey(KeyCode.Space))
-        {
-            rb.linearVelocity += Vector3.up * Physics.gravity.y * (lowJumpMultiplier - 1) * Time.fixedDeltaTime;
+            if (rb.linearVelocity.y < 0)
+            {
+                rb.linearVelocity += Vector3.up * Physics.gravity.y * (fallMultiplier - 1) * Time.fixedDeltaTime;
+            }
+            else if (rb.linearVelocity.y > 0 && !Input.GetKey(KeyCode.Space))
+            {
+                rb.linearVelocity += Vector3.up * Physics.gravity.y * (lowJumpMultiplier - 1) * Time.fixedDeltaTime;
+            }
         }
     }
 
     // Update is called once per frame
     void Update()
     {
+        if(isAlive) 
+        {
+            if ((Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow)) && currentPosIndex > 0)
+            {
+                currentPosIndex--; // Move left
+            }
+            if ((Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow)) && currentPosIndex < positions.Length - 1)
+            {
+                currentPosIndex++; // Move right
+            }
+
+            float playerHeight = GetComponent<Collider>().bounds.size.y;
+            bool isground = Physics.Raycast(transform.position, Vector3.down, (playerHeight / 2) + 0.1f, GroundMask);
+
+            if (Input.GetKeyDown(KeyCode.Space) && isground == true)
+            {
+                Jump();
+            }
+        }
         
-        if ((Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow))&& currentPosIndex > 0)
-        {
-            currentPosIndex--; // Move left
-        }
-        else if ((Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow)) && currentPosIndex < positions.Length - 1)
-        {
-            currentPosIndex++; // Move right
-        }
-
-        float playerHeight = GetComponent<Collider>().bounds.size.y;
-        bool isground = Physics.Raycast(transform.position, Vector3.down, (playerHeight / 2) + 0.1f, GroundMask);
-
-        if (Input.GetKeyDown(KeyCode.Space) && isAlive && isground == true)
-        {
-            Jump();
-        }
     }
 
     public void Jump()
@@ -74,11 +77,14 @@ public class PlayerController : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.name == "Mesh")
+        if (collision.gameObject.name == "Obsticle")
         {
             Dead();
         }
-        
+        if (collision.gameObject.name == "Pickup")
+        {
+
+        }
     }
 
     public void Dead()

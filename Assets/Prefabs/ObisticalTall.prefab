@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 2755559844943559637}
   - component: {fileID: 5254745239858914904}
   m_Layer: 0
-  m_Name: Mesh
+  m_Name: Obistical
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
