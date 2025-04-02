@@ -2,9 +2,9 @@ using UnityEngine;
 
 public class GroundSpawner : MonoBehaviour
 {
-    public GameObject ground;
+    [SerializeField] private GameObject ground;
 
-    Vector3 nextSpawn;
+    private Vector3 nextSpawn;
 
     public void spawnGround()
     {

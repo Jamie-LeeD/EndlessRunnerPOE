@@ -4,9 +4,11 @@ public class Ground : MonoBehaviour
 {
     private GroundSpawner groundspawner;
 
-    public GameObject[] obsticals;
+    public GameObject[] pickups;
+    public GameObject[] obstacals;
     public Transform[] lanes;
 
+    private int occupiedLane;
     private void Awake()
     {
         groundspawner = GameObject.FindFirstObjectByType<GroundSpawner>();
@@ -14,13 +16,15 @@ public class Ground : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        SpawnObstical();
+        SpawnObstacal();
+        SpawnPickUp();
     }
 
     private void OnTriggerExit(Collider other)
     {
         groundspawner.spawnGround();
-        Destroy(gameObject, 5f);
+        GameManager.points++;
+        Destroy(gameObject, 10f);
     }
 
     // Update is called once per frame
@@ -29,11 +33,22 @@ public class Ground : MonoBehaviour
 
     }
 
-    public void SpawnObstical()
+    public void SpawnObstacal()
     {
         int selectLane = Random.Range(0, lanes.Length);
-        int selectObsticle = Random.Range(0, obsticals.Length);
-
-        Instantiate(obsticals[selectObsticle], lanes[selectLane].transform.position, Quaternion.identity, transform);
+        int selectObstacle = Random.Range(0, obstacals.Length);
+        occupiedLane = selectLane;
+        Instantiate(obstacals[selectObstacle], lanes[selectLane].transform.position, Quaternion.identity, transform);
     } 
+
+    public void SpawnPickUp()
+    {
+        int selectLane = Random.Range(0, lanes.Length);
+        int selectPickup = Random.Range(0, pickups.Length);
+        if(occupiedLane != selectLane) 
+        {
+            Instantiate(pickups[selectPickup], lanes[selectLane].transform.position, Quaternion.identity, transform);
+        }
+        
+    }
 }

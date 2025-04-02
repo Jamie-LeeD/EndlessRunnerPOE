@@ -2,13 +2,11 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    public bool isAlive = true;
-    public float runSpeed;
-    public float horizontalSpeed;
-    public Rigidbody rb;
+    [SerializeField] private bool isAlive = true;
+    [SerializeField] private Rigidbody rb;
+    public static bool isPaused = false;
 
-    float horizontalInput;
-
+    public static float runSpeed = 10f;
     [SerializeField] private float JumpForce = 350;
     [SerializeField] private LayerMask GroundMask;
     [SerializeField] private float fallMultiplier = 2.5f; // Multiplier to make falling faster
@@ -23,15 +21,9 @@ public class PlayerController : MonoBehaviour
     }
     private void FixedUpdate()
     {
-        if (isAlive)
+        if (isAlive && !isPaused)
         {
-            Vector3 forwardMovement = Vector3.forward * runSpeed * Time.fixedDeltaTime;
-
-            // Target horizontal position (not just an offset)
-            Vector3 targetPosition = new Vector3(positions[currentPosIndex], rb.position.y, rb.position.z);
-
-            // Move rigidbody
-            rb.MovePosition(Vector3.Lerp(rb.position + forwardMovement, targetPosition + forwardMovement, runSpeed * Time.fixedDeltaTime));
+            Movement();
 
             if (rb.linearVelocity.y < 0)
             {
@@ -47,7 +39,7 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(isAlive) 
+        if(isAlive && !isPaused) 
         {
             if ((Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow)) && currentPosIndex > 0)
             {
@@ -75,21 +67,17 @@ public class PlayerController : MonoBehaviour
         rb.AddForce(Vector3.up * JumpForce);
     }
 
-    private void OnCollisionEnter(Collision collision)
-    {
-        if (collision.gameObject.name == "Obsticle")
-        {
-            Dead();
-        }
-        if (collision.gameObject.name == "Pickup")
-        {
-
-        }
-    }
-
     public void Dead()
     {
         isAlive = false;
         GameManager.instance.gameOver.SetActive(true);
+    }
+
+    public void Movement()
+    {
+        Vector3 forwardMovement = Vector3.forward * runSpeed * Time.fixedDeltaTime;
+        Vector3 targetPosition = new Vector3(positions[currentPosIndex], rb.position.y, rb.position.z);
+
+        rb.MovePosition(Vector3.Lerp(rb.position + forwardMovement, targetPosition + forwardMovement, runSpeed * Time.fixedDeltaTime));
     }
 }

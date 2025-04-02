@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -5,8 +6,11 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
 
+    public static int points = 0;
     public GameObject gameOver;
     public GameObject pauseMenu;
+
+    public TextMeshProUGUI score;
     private void Awake()
     {
         instance = this;
@@ -21,15 +25,28 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        DisplayScore();
+        if(Input.GetKeyDown(KeyCode.Escape)) 
+        {
+            pauseMenu.SetActive(true);
+            PlayerController.isPaused = true;
+        }
     }
 
     public void ResetLevel()
     {
+        points = 0;
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
     public void ContinueLevel()
     {
         pauseMenu.SetActive(false);
+        PlayerController.isPaused = false;
+    }
+
+    public void DisplayScore()
+    {
+        score.text = "Score: " + points;
     }
 }
