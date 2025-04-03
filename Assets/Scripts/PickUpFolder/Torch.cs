@@ -6,7 +6,7 @@ public class Torch : MonoBehaviour
     
     [SerializeField] private float effectTimer = 10f;
     
-    [SerializeField] private float fogDensity = 0.15f;
+    [SerializeField] private float fogDensity = 0.10f;
     [SerializeField] private float fogReduced = 0.05f;
 
     private float timer = 0;

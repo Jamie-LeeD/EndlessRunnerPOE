@@ -15,6 +15,10 @@ public class PlayerController : MonoBehaviour
     private int currentPosIndex = 1;
     private float[] positions = { -3f, 0f, 3f };
 
+    private void Start()
+    {
+        isPaused = false;
+    }
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
