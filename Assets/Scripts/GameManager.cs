@@ -11,6 +11,7 @@ public class GameManager : MonoBehaviour
     public GameObject pauseMenu;
 
     public TextMeshProUGUI score;
+    public TextMeshProUGUI hightScore;
     private void Awake()
     {
         instance = this;
@@ -26,6 +27,7 @@ public class GameManager : MonoBehaviour
     void Update()
     {
         DisplayScore();
+        DisplayHighScore();
         if(Input.GetKeyDown(KeyCode.Escape)) 
         {
             pauseMenu.SetActive(true);
@@ -48,5 +50,10 @@ public class GameManager : MonoBehaviour
     public void DisplayScore()
     {
         score.text = "Score: " + points;
+    }
+
+    public void DisplayHighScore()
+    {
+        hightScore.text = "High Score: " + points; 
     }
 }
