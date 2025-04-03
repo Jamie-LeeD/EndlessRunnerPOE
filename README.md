@@ -1,6 +1,6 @@
 Part 1 of POE 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-Individual Reports - Tiyah Singh -  ;  Jamie Lee Davies - 
+Individual Reports : Jamie Lee Davies - ; Tiyah Singh -  
 
 Code Reference & Bibliography List - 
 
