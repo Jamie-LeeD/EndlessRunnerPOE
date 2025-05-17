@@ -14,7 +14,7 @@ Game Development Process Presentation -
 
 Code Reference & Bibliography List - 
 
-Project Schedule - 
+Project Schedule - [GADE_P2_ProjectSchedule.xlsx](https://github.com/user-attachments/files/20266731/GADE_P2_ProjectSchedule.xlsx)
 
 Part 3 of POE
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
