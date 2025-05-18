@@ -4,11 +4,16 @@ public class Ground : MonoBehaviour
 {
     private GroundSpawner groundspawner;
 
+
     public GameObject[] pickups;
     public GameObject[] obstacals;
     public Transform[] lanes;
 
     private int occupiedLane;
+
+    [SerializeField]
+    public static bool spawn;
+
     private void Awake()
     {
         groundspawner = GameObject.FindFirstObjectByType<GroundSpawner>();
@@ -16,8 +21,12 @@ public class Ground : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        SpawnObstacal();
-        SpawnPickUp();
+        if(spawn)
+        {
+            SpawnObstacal();
+            SpawnPickUp();
+        }
+        
     }
 
     private void OnTriggerExit(Collider other)

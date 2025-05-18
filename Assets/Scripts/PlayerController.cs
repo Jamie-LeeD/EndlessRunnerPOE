@@ -13,8 +13,11 @@ public class PlayerController : MonoBehaviour
     private int currentPosIndex = 1;
     private float[] positions = { -3f, 0f, 3f };
 
+    [SerializeField]
+     Animator animator;
     private void Start()
     {
+        
     }
     private void Awake()
     {
@@ -27,10 +30,12 @@ public class PlayerController : MonoBehaviour
         if (rb.linearVelocity.y < 0)
         {
             rb.linearVelocity += Vector3.up * Physics.gravity.y * (fallMultiplier - 1) * Time.fixedDeltaTime;
+            animator.SetBool("IsJump", false);
         }
         else if (rb.linearVelocity.y > 0 && !Input.GetKey(KeyCode.Space))
         {
             rb.linearVelocity += Vector3.up * Physics.gravity.y * (lowJumpMultiplier - 1) * Time.fixedDeltaTime;
+            animator.SetBool("IsJump", false);
         }
     }
 
@@ -52,8 +57,10 @@ public class PlayerController : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Space) && isground == true)
         {
+            animator.SetBool("IsJump", true);
             Jump();
         }
+
         
     }
 
@@ -75,5 +82,10 @@ public class PlayerController : MonoBehaviour
         Vector3 targetPosition = new Vector3(positions[currentPosIndex], rb.position.y, rb.position.z);
 
         rb.MovePosition(Vector3.Lerp(rb.position + forwardMovement, targetPosition + forwardMovement, runSpeed * Time.fixedDeltaTime));
+    }
+
+    public Animator GetAnimator()
+    {
+        return animator;
     }
 }

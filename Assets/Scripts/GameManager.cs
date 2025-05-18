@@ -19,10 +19,18 @@ public class GameManager : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        Ground.spawn = true;
         gameOver.SetActive(false);
         pauseMenu.SetActive(false);
     }
 
+    private void FixedUpdate()
+    {
+        if (points == 10)
+        {
+            Ground.spawn = false;
+        }
+    }
     // Update is called once per frame
     void Update()
     {
