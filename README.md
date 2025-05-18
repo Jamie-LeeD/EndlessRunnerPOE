@@ -12,7 +12,7 @@ Part 2 of POE
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 Game Development Process Presentation -
 
-Code Reference & Bibliography List - 
+Code Reference & Bibliography List - [GADEP2_CodeReference_Bibliography_List.pdf](https://github.com/user-attachments/files/20272855/GADEP2_CodeReference_Bibliography_List.pdf)
 
 Project Schedule - [GADE_P2_ProjectSchedule.xlsx](https://github.com/user-attachments/files/20272793/GADE_P2_ProjectSchedule.xlsx)
 
