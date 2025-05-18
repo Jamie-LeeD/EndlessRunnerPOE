@@ -2,9 +2,7 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    [SerializeField] private bool isAlive = true;
     [SerializeField] private Rigidbody rb;
-    public static bool isPaused = false;
 
     public static float runSpeed = 10f;
     [SerializeField] private float JumpForce = 350;
@@ -17,7 +15,6 @@ public class PlayerController : MonoBehaviour
 
     private void Start()
     {
-        isPaused = false;
     }
     private void Awake()
     {
@@ -25,42 +22,37 @@ public class PlayerController : MonoBehaviour
     }
     private void FixedUpdate()
     {
-        if (isAlive && !isPaused)
-        {
-            Movement();
+        Movement();
 
-            if (rb.linearVelocity.y < 0)
-            {
-                rb.linearVelocity += Vector3.up * Physics.gravity.y * (fallMultiplier - 1) * Time.fixedDeltaTime;
-            }
-            else if (rb.linearVelocity.y > 0 && !Input.GetKey(KeyCode.Space))
-            {
-                rb.linearVelocity += Vector3.up * Physics.gravity.y * (lowJumpMultiplier - 1) * Time.fixedDeltaTime;
-            }
+        if (rb.linearVelocity.y < 0)
+        {
+            rb.linearVelocity += Vector3.up * Physics.gravity.y * (fallMultiplier - 1) * Time.fixedDeltaTime;
+        }
+        else if (rb.linearVelocity.y > 0 && !Input.GetKey(KeyCode.Space))
+        {
+            rb.linearVelocity += Vector3.up * Physics.gravity.y * (lowJumpMultiplier - 1) * Time.fixedDeltaTime;
         }
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(isAlive && !isPaused) 
+
+        if ((Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow)) && currentPosIndex > 0)
         {
-            if ((Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow)) && currentPosIndex > 0)
-            {
-                currentPosIndex--; // Move left
-            }
-            if ((Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow)) && currentPosIndex < positions.Length - 1)
-            {
-                currentPosIndex++; // Move right
-            }
+            currentPosIndex--; // Move left
+        }
+        if ((Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow)) && currentPosIndex < positions.Length - 1)
+        {
+            currentPosIndex++; // Move right
+        }
+        
+        float playerHeight = GetComponent<Collider>().bounds.size.y;
+        bool isground = Physics.Raycast(transform.position, Vector3.down, (playerHeight / 2) + 0.1f, GroundMask);
 
-            float playerHeight = GetComponent<Collider>().bounds.size.y;
-            bool isground = Physics.Raycast(transform.position, Vector3.down, (playerHeight / 2) + 0.1f, GroundMask);
-
-            if (Input.GetKeyDown(KeyCode.Space) && isground == true)
-            {
-                Jump();
-            }
+        if (Input.GetKeyDown(KeyCode.Space) && isground == true)
+        {
+            Jump();
         }
         
     }
@@ -73,7 +65,7 @@ public class PlayerController : MonoBehaviour
 
     public void Dead()
     {
-        isAlive = false;
+        Time.timeScale = 0f;
         GameManager.instance.gameOver.SetActive(true);
     }
 

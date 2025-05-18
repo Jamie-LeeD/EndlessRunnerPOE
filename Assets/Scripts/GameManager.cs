@@ -31,12 +31,13 @@ public class GameManager : MonoBehaviour
         if(Input.GetKeyDown(KeyCode.Escape)) 
         {
             pauseMenu.SetActive(true);
-            PlayerController.isPaused = true;
+            Time.timeScale = 0f;
         }
     }
 
     public void ResetLevel()
     {
+        Time.timeScale = 1f;
         points = 0;
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
@@ -44,7 +45,7 @@ public class GameManager : MonoBehaviour
     public void ContinueLevel()
     {
         pauseMenu.SetActive(false);
-        PlayerController.isPaused = false;
+        Time.timeScale = 1f;
     }
 
     public void DisplayScore()
