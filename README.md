@@ -10,7 +10,7 @@ Project Schedule - [GADE6221_P1_ProjectSchedule.xlsx](https://github.com/user-at
 
 Part 2 of POE
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-Game Development Process Presentation -
+Game Development Process Presentation -[Uploading GADE P2 Presentation.pdf…]()
 
 Code Reference & Bibliography List - [GADEP2_CodeReference_Bibliography_List.pdf](https://github.com/user-attachments/files/20272855/GADEP2_CodeReference_Bibliography_List.pdf)
 
