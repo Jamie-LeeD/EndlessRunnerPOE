@@ -4,7 +4,7 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
-    public static GameManager instance;
+    public static GameManager Instance;
 
     public static int points = 0;
     public GameObject gameOver;
@@ -13,10 +13,16 @@ public class GameManager : MonoBehaviour
     public TextMeshProUGUI score;
     public TextMeshProUGUI hightScore;
 
-    private bool bossspawn = false;
     private void Awake()
     {
-        instance = this;
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
     }
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -28,21 +34,10 @@ public class GameManager : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if(points == 10)
-        {
-            BossManager.Instance.spawnBoss();
-            points++;
-        }
-
-        if(points == 20) 
-        {
-            BossManager.Instance.spawnBoss();
-            points++;
-        }
-
         if (points == 30) 
         {
             SceneManager.LoadScene(2);
+            points++;
         }
     }
     // Update is called once per frame
@@ -61,7 +56,7 @@ public class GameManager : MonoBehaviour
     {
         Time.timeScale = 1f;
         points = 0;
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        SceneManager.LoadScene(1);
     }
 
     public void ContinueLevel()

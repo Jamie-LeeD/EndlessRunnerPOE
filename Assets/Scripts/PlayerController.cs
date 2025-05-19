@@ -74,7 +74,7 @@ public class PlayerController : MonoBehaviour
     public void Dead()
     {
         Time.timeScale = 0f;
-        GameManager.instance.gameOver.SetActive(true);
+        GameManager.Instance.gameOver.SetActive(true);
     }
 
     public void Movement()
