@@ -52,12 +52,17 @@ public class Ground : MonoBehaviour
 
     public void SpawnPickUp()
     {
-        int selectLane = Random.Range(0, lanes.Length);
-        int selectPickup = Random.Range(0, pickups.Length);
-        if(occupiedLane != selectLane) 
+        int shouldPickup = Random.Range(0, 3);
+        if(shouldPickup == 1) 
         {
-            Instantiate(pickups[selectPickup], lanes[selectLane].transform.position, Quaternion.identity, transform);
+            int selectLane = Random.Range(0, lanes.Length);
+            int selectPickup = Random.Range(0, pickups.Length);
+            if (occupiedLane != selectLane)
+            {
+                Instantiate(pickups[selectPickup], lanes[selectLane].transform.position, Quaternion.identity, transform);
+            }
         }
+        
         
     }
 }

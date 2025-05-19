@@ -34,6 +34,18 @@ public class GameManager : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (points == 10)
+        {
+            BossManager.Instance.spawnBoss();
+
+            points++;
+        }
+        if(points == 20) 
+        {
+            BossManager.Instance.spawnBoss();
+
+            points++;
+        }
         if (points == 30) 
         {
             SceneManager.LoadScene(2);
