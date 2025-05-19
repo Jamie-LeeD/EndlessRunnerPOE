@@ -32,10 +32,20 @@ public class CarBoss : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if(collision.gameObject.GetComponent<PlayerController>() != null) 
+        if (collision != null)
         {
-            Debug.Log("collided");
-        }
-        
+            if (collision.gameObject.GetComponent<PlayerController>() != null)
+            {
+                if(PickUpManager.Instance.isGhost == false)
+                {
+                    collision.gameObject.GetComponent<PlayerController>().Dead();
+                }   
+            }
+
+            if(collision.gameObject.GetComponent<Obstacle>() != null)
+            {
+                Destroy(collision.gameObject.GetComponent<Obstacle>());
+            }
+        } 
     }
 }

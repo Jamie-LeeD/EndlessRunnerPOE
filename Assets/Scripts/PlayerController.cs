@@ -4,7 +4,8 @@ public class PlayerController : MonoBehaviour
 {
     [SerializeField] private Rigidbody rb;
 
-    public static float runSpeed = 10f;
+    [SerializeField] public float runSpeed
+    {  get; set; }
     [SerializeField] private float JumpForce = 350;
     [SerializeField] private LayerMask GroundMask;
     [SerializeField] private float fallMultiplier = 2.5f; // Multiplier to make falling faster
@@ -17,7 +18,7 @@ public class PlayerController : MonoBehaviour
      Animator animator;
     private void Start()
     {
-        
+        runSpeed = 10f;
     }
     private void Awake()
     {

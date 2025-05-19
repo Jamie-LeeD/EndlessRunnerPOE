@@ -20,9 +20,9 @@ public class GhostOrb : MonoBehaviour
         {
             if (collision.gameObject.GetComponent<PlayerController>() != null)
             {
-                
-                GetComponent<Collider>().enabled = false;
-                GetComponent<MeshRenderer>().enabled = false;
+
+                PickUpManager.Instance.AddEffect(PickUpEffects.GHOST, 5f);
+                Destroy(gameObject);
             }
         }
     }

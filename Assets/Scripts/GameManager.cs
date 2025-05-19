@@ -12,6 +12,8 @@ public class GameManager : MonoBehaviour
 
     public TextMeshProUGUI score;
     public TextMeshProUGUI hightScore;
+
+    private bool bossspawn = false;
     private void Awake()
     {
         instance = this;
@@ -26,9 +28,21 @@ public class GameManager : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (points == 10)
+        if(points == 10)
         {
-            Ground.spawn = false;
+            BossManager.Instance.spawnBoss();
+            points++;
+        }
+
+        if(points == 20) 
+        {
+            BossManager.Instance.spawnBoss();
+            points++;
+        }
+
+        if (points == 30) 
+        {
+            SceneManager.LoadScene(2);
         }
     }
     // Update is called once per frame
