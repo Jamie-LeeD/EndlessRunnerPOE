@@ -44,8 +44,7 @@ public class AudioManager : MonoBehaviour
     public void EndJump()
     {
         playerSFXSource.PlayOneShot(jumpSFX);
-        playerSFXSource.clip = stepsSFX;
-        playerSFXSource.Play();
+        playerSFXSource.UnPause();
     }
 
     public void PlayPickUp()

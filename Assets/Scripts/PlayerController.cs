@@ -14,11 +14,16 @@ public class PlayerController : MonoBehaviour
     private int currentPosIndex = 1;
     private float[] positions = { -3f, 0f, 3f };
 
+    private bool jumpActivated = false;
+
     [SerializeField]
      Animator animator;
+    [SerializeField]
+    AudioManager audioManager;
     private void Start()
     {
         runSpeed = 10f;
+        audioManager.PlaySteptsSFX();
     }
     private void Awake()
     {
@@ -59,9 +64,19 @@ public class PlayerController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space) && isground == true)
         {
             animator.SetBool("IsJump", true);
+            audioManager.StartJump();
             Jump();
         }
 
+        if(jumpActivated == true)
+        {
+            if(isground == true) 
+            {
+                //Debug.Log("JumpACt happens");
+                audioManager.EndJump();
+                jumpActivated = false;
+            }
+        }
         
     }
 
@@ -69,6 +84,7 @@ public class PlayerController : MonoBehaviour
     {
         rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0, rb.linearVelocity.z); // Reset vertical velocity before jumping
         rb.AddForce(Vector3.up * JumpForce);
+        jumpActivated = true;
     }
 
     public void Dead()
