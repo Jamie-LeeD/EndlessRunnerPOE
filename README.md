@@ -19,3 +19,8 @@ Project Schedule - [GADE_P2_ProjectSchedule.xlsx](https://github.com/user-attach
 
 Part 3 of POE
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Game Development Process Final Presentation -
+
+Code Reference & Bibliography List - 
+
+Project Schedule -
