@@ -77,6 +77,13 @@ public class GameManager : MonoBehaviour
         Time.timeScale = 1f;
     }
 
+    public void HomeBtn()
+    {
+        Time.timeScale = 1f;
+        points = 0;
+        SceneManager.LoadScene(0);
+    }
+
     public void DisplayScore()
     {
         score.text = "Score: " + points;

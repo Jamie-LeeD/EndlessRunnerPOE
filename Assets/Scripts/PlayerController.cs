@@ -11,6 +11,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float fallMultiplier = 2.5f; // Multiplier to make falling faster
     [SerializeField] private float lowJumpMultiplier = 2f; // Multiplier for short jumps
 
+    private bool isground;
     private int currentPosIndex = 1;
     private float[] positions = { -3f, 0f, 3f };
 
@@ -37,11 +38,29 @@ public class PlayerController : MonoBehaviour
         {
             rb.linearVelocity += Vector3.up * Physics.gravity.y * (fallMultiplier - 1) * Time.fixedDeltaTime;
             animator.SetBool("IsJump", false);
+            if (jumpActivated == true)
+            {
+                if (isground == true)
+                {
+                    //Debug.Log("JumpACt happens");
+                    audioManager.EndJump();
+                    jumpActivated = false;
+                }
+            }
         }
         else if (rb.linearVelocity.y > 0 && !Input.GetKey(KeyCode.Space))
         {
             rb.linearVelocity += Vector3.up * Physics.gravity.y * (lowJumpMultiplier - 1) * Time.fixedDeltaTime;
             animator.SetBool("IsJump", false);
+            if (jumpActivated == true)
+            {
+                if (isground == true)
+                {
+                    //Debug.Log("JumpACt happens");
+                    audioManager.EndJump();
+                    jumpActivated = false;
+                }
+            }
         }
     }
 
@@ -59,7 +78,7 @@ public class PlayerController : MonoBehaviour
         }
         
         float playerHeight = GetComponent<Collider>().bounds.size.y;
-        bool isground = Physics.Raycast(transform.position, Vector3.down, (playerHeight / 2) + 0.1f, GroundMask);
+        isground = Physics.Raycast(transform.position, Vector3.down, (playerHeight / 2) + 0.1f, GroundMask);
 
         if (Input.GetKeyDown(KeyCode.Space) && isground == true)
         {
@@ -67,17 +86,6 @@ public class PlayerController : MonoBehaviour
             audioManager.StartJump();
             Jump();
         }
-
-        if(jumpActivated == true)
-        {
-            if(isground == true) 
-            {
-                //Debug.Log("JumpACt happens");
-                audioManager.EndJump();
-                jumpActivated = false;
-            }
-        }
-        
     }
 
     public void Jump()
@@ -90,7 +98,9 @@ public class PlayerController : MonoBehaviour
     public void Dead()
     {
         Time.timeScale = 0f;
+        audioManager.playerSFXSource.Pause();
         GameManager.Instance.gameOver.SetActive(true);
+
     }
 
     public void Movement()

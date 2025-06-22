@@ -3,7 +3,7 @@ using UnityEngine;
 public class AudioManager : MonoBehaviour
 {
     [SerializeField] AudioSource ambianceSource;
-    [SerializeField] AudioSource playerSFXSource;
+    [SerializeField] public AudioSource playerSFXSource;
     [SerializeField] AudioSource generalSFXSource;
     [SerializeField] AudioSource bossSFXSource;
 
