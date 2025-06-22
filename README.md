@@ -23,4 +23,5 @@ Game Development Process Final Presentation -
 
 Code Reference & Bibliography List - [GADEP3_CodeReference_Bibliography_List.pdf](https://github.com/user-attachments/files/20855121/GADEP3_CodeReference_Bibliography_List.pdf)
 
-Project Schedule -
+Project Schedule -[GADE_P3_ProjectSchedule.xlsx](https://github.com/user-attachments/files/20855174/GADE_P3_ProjectSchedule.xlsx)
+
