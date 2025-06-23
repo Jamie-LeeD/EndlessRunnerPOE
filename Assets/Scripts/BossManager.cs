@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class BossManager : MonoBehaviour
 {
@@ -8,7 +9,7 @@ public class BossManager : MonoBehaviour
     {
         if (Instance == null)
         {
-            Instance = this;
+            Instance = this; 
         }
         else
         {
@@ -37,9 +38,22 @@ public class BossManager : MonoBehaviour
 
     public void spawnBoss()
     {
-        Vector3 vecPlayer = player.transform.position;
-        Vector3 targetPosition = vecPlayer + offset;
+        EventManager.Instance.Invoke(GameEvents.BOSS_SPAWN, this);
+        int index = SceneManager.GetActiveScene().buildIndex;
+        if (index == 1)
+        {
+            Vector3 vecPlayer = player.transform.position;
+            Vector3 targetPosition = vecPlayer + offset;
 
-        Instantiate(boss, targetPosition, Quaternion.identity, transform);
+            Instantiate(boss, targetPosition, Quaternion.identity, transform);
+        }
+        else 
+        {
+            offset = new Vector3(0, 0, -2);
+            Vector3 vecPlayer = player.transform.position;
+            Vector3 targetPosition = vecPlayer + offset;
+            boss.transform.position = targetPosition;
+            boss.SetActive(true);
+        }
     }
 }

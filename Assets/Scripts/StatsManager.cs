@@ -24,11 +24,14 @@ public class StatsManager
         pickupP=0;
         bossDefeated=0;
     }
-    public void compareScore(int score)
+    public void compareScore(int hs, int op, int pp, int bd)
     {
-        if(highScore < score)
+        if(highScore < hs)
         {
-            Debug.Log("Tis better score");
+            highScore = hs;
+            obsticleP = op;
+            pickupP = pp;
+            bossDefeated = bd;
         }
     }
 }

@@ -26,7 +26,10 @@ public class ManBoss : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-            Debug.Log("successful");
+        if(collision.gameObject.GetComponent<Obstacle>() == null)
+            {
+                Destroy(gameObject);
+            }
     }
 
     private void OnDestroy()

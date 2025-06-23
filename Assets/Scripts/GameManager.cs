@@ -1,4 +1,5 @@
 using TMPro;
+using UnityEditor.SearchService;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -6,12 +7,13 @@ public class GameManager : MonoBehaviour, IGameListener
 {
     public static GameManager Instance;
 
-    public static int points = 0;
+    public int points = 0;
     public int obsticlesPassed = 0;
     public int pickupsUsed = 0; 
-    public int bossDefeated = 0;    
+    public int bossDefeated = 0;
 
-    
+    private float timer = 0f;
+    private static bool allowRandomSwitching = false;
 
     public GameObject gameOver;
     public GameObject pauseMenu;
@@ -55,28 +57,21 @@ public class GameManager : MonoBehaviour, IGameListener
     }
     private void FixedUpdate()
     {
-        //if (points == 10)
-        //{
-        //    BossManager.Instance.spawnBoss();
-
-        //    points++;
-        //}
-        //if(points == 20) 
-        //{
-        //    BossManager.Instance.spawnBoss();
-
-        //    points++;
-        //}
-        //if (points == 30) 
-        //{
-        //    SceneManager.LoadScene(2);
-        //    points++;
-        //}
+        if(timer >= 30f)
+        {
+            BossManager.Instance.spawnBoss();
+        }
+        if(timer >= 50f)
+        {
+            LoadNextScene();
+            timer = 0;
+        }
     }
     // Update is called once per frame
     void Update()
     {
-        if(Input.GetKeyDown(KeyCode.Escape)) 
+        timer += Time.deltaTime;
+        if (Input.GetKeyDown(KeyCode.Escape)) 
         {
             pauseMenu.SetActive(true);
             Time.timeScale = 0f;
@@ -111,10 +106,9 @@ public class GameManager : MonoBehaviour, IGameListener
     public async void DisplayHighScore()
     {
         StatsManager statsManager = FirebaseSaveManager.Instance.tempLoad;
-        statsManager.compareScore(points);
-        statsManager.highScore = points;
+        statsManager.compareScore(points, obsticlesPassed, pickupsUsed, bossDefeated);
         await FirebaseSaveManager.Instance.SaveData(statsManager);
-        hightScore.text = "High Score: " + points; 
+        hightScore.text = "High Score: " + statsManager.highScore; 
     }
 
     public void OnEvent(GameEvents eventType, Component sender, object param = null)
@@ -143,6 +137,28 @@ public class GameManager : MonoBehaviour, IGameListener
                 Debug.Log("Boss defeated");
                 bossDefeated++;
                 break;
+        }
+    }
+
+    public void LoadNextScene()
+    {
+        if (!allowRandomSwitching)
+        {
+            // First time: go from Scene1 to Scene2
+            SceneManager.LoadScene(2);
+            allowRandomSwitching = true;
+        }
+        else
+        {
+            int index = SceneManager.GetActiveScene().buildIndex;
+            // From now on: randomly switch between Scene1 and Scene2
+            int[] scenes = { 1, 2 };
+            int randomScene = scenes[Random.Range(0, scenes.Length)];
+            if (randomScene != index)
+            {
+                SceneManager.LoadScene(randomScene);
+            }
+
         }
     }
 }
