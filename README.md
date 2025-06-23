@@ -19,7 +19,7 @@ Project Schedule - [GADE_P2_ProjectSchedule.xlsx](https://github.com/user-attach
 
 Part 3 of POE
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-Game Development Process Final Presentation -
+Game Development Process Final Presentation - https://www.canva.com/design/DAGq19TwetI/VwHPPKo5JAdROqIYztfwTA/edit?utm_content=DAGq19TwetI&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton
 
 Code Reference & Bibliography List - [GADEP3_CodeReference_Bibliography_List.pdf](https://github.com/user-attachments/files/20855121/GADEP3_CodeReference_Bibliography_List.pdf)
 
