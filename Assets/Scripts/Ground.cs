@@ -32,7 +32,7 @@ public class Ground : MonoBehaviour
     private void OnTriggerExit(Collider other)
     {
         groundspawner.spawnGround();
-        GameManager.points++;
+        EventManager.Instance.Invoke(GameEvents.SCORE_CHANGED, this);
         Destroy(gameObject, 10f);
     }
 

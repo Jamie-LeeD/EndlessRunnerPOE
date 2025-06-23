@@ -3,7 +3,6 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     [SerializeField] private Rigidbody rb;
-
     [SerializeField] public float runSpeed
     {  get; set; }
     [SerializeField] private float JumpForce = 350;
@@ -38,8 +37,10 @@ public class PlayerController : MonoBehaviour
         {
             rb.linearVelocity += Vector3.up * Physics.gravity.y * (fallMultiplier - 1) * Time.fixedDeltaTime;
             animator.SetBool("IsJump", false);
+           
             if (jumpActivated == true)
             {
+                
                 if (isground == true)
                 {
                     //Debug.Log("JumpACt happens");
@@ -100,7 +101,7 @@ public class PlayerController : MonoBehaviour
         Time.timeScale = 0f;
         audioManager.playerSFXSource.Pause();
         GameManager.Instance.gameOver.SetActive(true);
-
+        GameManager.Instance.DisplayHighScore();
     }
 
     public void Movement()

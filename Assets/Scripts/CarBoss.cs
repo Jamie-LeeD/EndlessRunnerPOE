@@ -48,4 +48,10 @@ public class CarBoss : MonoBehaviour
             }
         } 
     }
+
+    private void OnDestroy()
+    {
+        EventManager.Instance.Invoke(GameEvents.BOSS_DEFEATED, this);
+        EventManager.Instance.Invoke(GameEvents.SCORE_CHANGED, this);
+    }
 }

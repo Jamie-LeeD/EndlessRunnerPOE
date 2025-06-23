@@ -110,6 +110,8 @@ public class PickUpManager : MonoBehaviour
         newEffect.timeRemaining = 0;
 
         activeEffects.Add(newEffect);
+
+        EventManager.Instance.Invoke(GameEvents.PICK_UP_ADDED, this, newEffect.type);
     }
 
     public void RemoveEffect(PickUpEffects type)

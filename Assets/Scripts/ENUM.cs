@@ -2,8 +2,12 @@ using UnityEngine;
 
 public enum GameEvents
 {
+    SCORE_CHANGED,
     PICK_UP_ADDED,
-    PICK_UP_REMOVED
+    OBSTICLE_PASSED,
+    BOSS_SPAWN,
+    BOSS_DEFEATED
+    
 }
 public enum PickUpEffects
 {

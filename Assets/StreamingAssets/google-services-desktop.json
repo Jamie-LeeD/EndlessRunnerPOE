@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "329730910013",
+    "project_id": "noexit-6dc8d",
+    "storage_bucket": "noexit-6dc8d.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:329730910013:android:fa643607e1ff08a43d0754",
+        "android_client_info": {
+          "package_name": "no.exit.poe"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCU_NKnQvtrolWMOKelO87WVprhbWnJiRw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
