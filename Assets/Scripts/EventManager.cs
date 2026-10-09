@@ -3,27 +3,41 @@ using UnityEngine;
 
 public class EventManager : MonoBehaviour
 {
-    //Should make it a singleton for easy access
     public static EventManager Instance;
 
-
-    //we can use a list, but dictionary works more efficiently
     private Dictionary<GameEvents, List<IGameListener>> listeners = new();
 
     private void Awake()
     {
-        if (Instance == null)
+        if (Instance != null && Instance != this)
         {
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
+            Destroy(this);
+            return;
         }
-        else
+
+        // This component shares a GameObject with the scene managers. DontDestroyOnLoad
+        // on that object would keep their old scene references alive after a level change.
+        bool attachedToSceneManagers = GetComponent<GameManager>() != null
+            || GetComponent<PickUpManager>() != null
+            || GetComponent<BossManager>() != null;
+
+        if (attachedToSceneManagers)
         {
-            Destroy(gameObject);
+            GameObject host = new GameObject("EventManager");
+            host.AddComponent<EventManager>();
+            Destroy(this);
+            return;
         }
+
+        Instance = this;
+        DontDestroyOnLoad(gameObject);
     }
 
-
+    private void OnDestroy()
+    {
+        if (Instance == this)
+            Instance = null;
+    }
 
     /// <summary>
     /// Registers a new lister for a specific event
@@ -32,21 +46,16 @@ public class EventManager : MonoBehaviour
     /// <param name="listener">The listener to register</param>
     public void AddListener(GameEvents eventType, IGameListener listener)
     {
-        //basic null check
-        if (listener == null) return;
+        if (!IsAlive(listener)) return;
 
-
-        if (!listeners.TryGetValue(eventType, out var listenList)) //will try find something, will store found events in out var listn list
+        if (!listeners.TryGetValue(eventType, out var listenList))
         {
             listenList = new List<IGameListener>();
             listeners[eventType] = listenList;
         }
 
-        //check if there is not already a duplicate
         if (!listenList.Contains(listener))
-        {
             listenList.Add(listener);
-        }
     }
 
     /// <summary>
@@ -55,20 +64,20 @@ public class EventManager : MonoBehaviour
     /// <param name="eventType">Event to invoke</param>
     /// <param name="sender">The parent invoking the event</param>
     /// <param name="param">Optional event data</param>
-    public void Invoke(GameEvents eventType, Component sender, object param = null) //Envokes it
+    public void Invoke(GameEvents eventType, Component sender, object param = null)
     {
-
-        //this is shorthand for both returning if there are no listeners, 
-        // AND if there are store them in a variable called listenList
         if (!listeners.TryGetValue(eventType, out var listenList)) return;
 
-
-
-
-        //when we invoke, we go through all the listeners (in reverse order incase we remove any along the way)
         for (int i = listenList.Count - 1; i >= 0; i--)
         {
-            listenList[i]?.OnEvent(eventType, sender, param);
+            IGameListener listener = listenList[i];
+            if (!IsAlive(listener))
+            {
+                listenList.RemoveAt(i);
+                continue;
+            }
+
+            listener.OnEvent(eventType, sender, param);
         }
     }
 
@@ -79,25 +88,29 @@ public class EventManager : MonoBehaviour
     /// <param name="listener">Listener to remove</param>
     public void RemoveListener(GameEvents eventType, IGameListener listener)
     {
-        //again check if there are listeners, if there are, store in listenList variables
         if (listeners.TryGetValue(eventType, out var listenList))
         {
             listenList.Remove(listener);
 
-            //if its the last listener, remove the event
             if (listenList.Count == 0)
-            {
                 listeners.Remove(eventType);
-            }
         }
     }
 
-
     public void Clear()
     {
-        //fresh start
         listeners.Clear();
     }
 
-    
+    private static bool IsAlive(IGameListener listener)
+    {
+        if (listener == null)
+            return false;
+
+        // A destroyed Unity object stored as an interface is not C# null.
+        if (listener is Object unityObject && unityObject == null)
+            return false;
+
+        return true;
+    }
 }

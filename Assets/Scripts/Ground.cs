@@ -11,8 +11,9 @@ public class Ground : MonoBehaviour
 
     private int occupiedLane;
 
-    [SerializeField]
-    public static bool spawn;
+    public static bool spawn = true;
+
+    private bool scored;
 
     private void Awake()
     {
@@ -31,8 +32,18 @@ public class Ground : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        groundspawner.spawnGround();
-        EventManager.Instance.Invoke(GameEvents.SCORE_CHANGED, this);
+        if (scored || other.GetComponentInParent<PlayerController>() == null)
+            return;
+
+        scored = true;
+        if (groundspawner != null)
+            groundspawner.spawnGround();
+        else
+            Debug.LogError("GroundSpawner is missing, so the next road tile was not spawned.");
+
+        if (EventManager.Instance != null)
+            EventManager.Instance.Invoke(GameEvents.SCORE_CHANGED, this);
+
         Destroy(gameObject, 10f);
     }
 

@@ -1,12 +1,6 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using Firebase;
-using Firebase.Database;
-using Firebase.Extensions;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 public class MainMenu : MonoBehaviour
 {
@@ -14,23 +8,51 @@ public class MainMenu : MonoBehaviour
 
     private async void Start()
     {
-        await FirebaseSaveManager.Instance.LoadData();
-        int hs = FirebaseSaveManager.Instance.tempLoad.highScore;
-        int op = FirebaseSaveManager.Instance.tempLoad.obsticleP;
-        int pp = FirebaseSaveManager.Instance.tempLoad.pickupP;
-        int bd = FirebaseSaveManager.Instance.tempLoad.bossDefeated;
-        string temp = "";
-
-        temp = temp + "High Score: ";
-        temp = temp + hs;
-        temp = temp + "\nObsticles Passed: ";
-        temp = temp + op;
-        temp = temp + "\nPickUps Used: ";
-        temp = temp + pp;
-        temp = temp + "\nBosses Defeated: ";
-        temp = temp + bd;
-        txtStats.text = temp;
+        await ShowSavedStats();
     }
+
+    public async void OpenStats()
+    {
+        if (txtStats != null)
+        {
+            txtStats.transform.parent.gameObject.SetActive(true);
+            StatsManager known = FirebaseSaveManager.Instance != null
+                ? FirebaseSaveManager.Instance.GetBestStats()
+                : new StatsManager();
+            txtStats.text = FormatStats(known);
+        }
+
+        gameObject.SetActive(false);
+        await ShowSavedStats();
+    }
+
+    private async System.Threading.Tasks.Task ShowSavedStats()
+    {
+        if (txtStats == null)
+            return;
+
+        StatsManager stats = new StatsManager();
+        if (FirebaseSaveManager.Instance != null)
+        {
+            await FirebaseSaveManager.Instance.LoadData();
+            stats = FirebaseSaveManager.Instance.GetBestStats();
+        }
+        else
+        {
+            Debug.LogError("FirebaseSaveManager is missing from the main menu.");
+        }
+
+        txtStats.text = FormatStats(stats);
+    }
+
+    private static string FormatStats(StatsManager stats)
+    {
+        return "High Score: " + stats.highScore
+            + "\nObsticles Passed: " + stats.obsticleP
+            + "\nPickUps Used: " + stats.pickupP
+            + "\nBosses Defeated: " + stats.bossDefeated;
+    }
+
     public void PlayGame()
     {
         SceneManager.LoadSceneAsync(1);
@@ -40,6 +62,4 @@ public class MainMenu : MonoBehaviour
     {
         Application.Quit();
     }
-
-    
 }

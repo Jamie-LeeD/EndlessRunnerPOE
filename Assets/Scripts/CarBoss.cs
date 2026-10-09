@@ -17,41 +17,32 @@ public class CarBoss : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
     }
-    // Update is called once per frame
-    void Update()
+    private void FixedUpdate()
     {
         CarMove();
     }
 
     public void CarMove()
     {
-        Vector3 forwardMovement = Vector3.left * runSpeed * Time.fixedDeltaTime;
+        if (rb == null)
+            return;
 
-        rb.MovePosition(Vector3.Lerp(rb.position + forwardMovement, rb.position, runSpeed * Time.fixedDeltaTime));
+        Vector3 forwardMovement = Vector3.left * runSpeed * Time.fixedDeltaTime;
+        float blend = Mathf.Clamp01(runSpeed * Time.fixedDeltaTime);
+        rb.MovePosition(Vector3.Lerp(rb.position + forwardMovement, rb.position, blend));
     }
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision != null)
-        {
-            if (collision.gameObject.GetComponent<PlayerController>() != null)
-            {
-                if(PickUpManager.Instance.isGhost == false)
-                {
-                    collision.gameObject.GetComponent<PlayerController>().Dead();
-                }   
-            }
+        if (collision == null)
+            return;
 
-            if(collision.gameObject.GetComponent<Obstacle>() != null)
-            {
-                Destroy(collision.gameObject.GetComponent<Obstacle>());
-            }
-        } 
-    }
+        PlayerController player = collision.gameObject.GetComponent<PlayerController>();
+        if (player != null && (PickUpManager.Instance == null || !PickUpManager.Instance.isGhost))
+            player.Dead();
 
-    private void OnDestroy()
-    {
-        EventManager.Instance.Invoke(GameEvents.BOSS_DEFEATED, this);
-        EventManager.Instance.Invoke(GameEvents.SCORE_CHANGED, this);
+        Obstacle obstacle = collision.gameObject.GetComponent<Obstacle>();
+        if (obstacle != null)
+            Destroy(obstacle.gameObject);
     }
 }

@@ -1,7 +1,5 @@
 using System.Collections.Generic;
-using System;
 using UnityEngine;
-using UnityEngine.TextCore.Text;
 
 public class PickUpManager : MonoBehaviour
 {
@@ -13,39 +11,52 @@ public class PickUpManager : MonoBehaviour
     Animator animator;
     [SerializeField]
     PlayerController playerController;
-    [SerializeField]
-    public bool isGhost {  get; set; }
+    public bool isGhost { get; set; }
 
-    [Serializable]
+    [System.Serializable]
     class Effect
     {
         public PickUpEffects type;
         public float duration;
         public float timeRemaining;
     }
-    [SerializeField] List<Effect> activeEffects;
+    [SerializeField] List<Effect> activeEffects = new List<Effect>();
 
     private void Awake()
     {
-        if (Instance == null)
+        if (Instance != null && Instance != this)
         {
+            PickUpManager previous = Instance;
             Instance = this;
+            if (previous.gameObject != gameObject)
+                Destroy(previous.gameObject);
         }
         else
         {
-            Destroy(gameObject);
+            Instance = this;
         }
+
+        if (activeEffects == null)
+            activeEffects = new List<Effect>();
     }
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+
+    private void OnDestroy()
+    {
+        if (Instance == this)
+            Instance = null;
+    }
+
     void Start()
     {
         isGhost = false;
     }
 
-    // Update is called once per frame
     void Update()
     {
-        List<PickUpEffects> toBeRemoved = new List<PickUpEffects>();
+        if (activeEffects == null)
+            return;
+
+        List<Effect> expired = new List<Effect>();
 
         foreach (var statusEffect in activeEffects)
         {
@@ -53,82 +64,99 @@ public class PickUpManager : MonoBehaviour
             statusEffect.timeRemaining -= Time.deltaTime;
 
             if (statusEffect.timeRemaining <= 0)
-            {
-                //apply status effect
-                switch (statusEffect.type)
-                {
-                    case PickUpEffects.TORCH:
-                        RenderSettings.fogDensity = 0.05f;
-                        break;
-                    case PickUpEffects.FUEL:
-                        playerController.runSpeed = 15f;
-                        animator.SetBool("IsSprint", true);
-                        break;
-                    case PickUpEffects.GHOST:
-                        isGhost = true;
-                        ghostSheild.SetActive(true);
-                        break;
-                    default:
-                        break;
-                }
-            }
+                ApplyEffect(statusEffect.type);
 
             if (statusEffect.duration <= 0)
-            {
-                switch (statusEffect.type)
-                {
-                    case PickUpEffects.TORCH:
-                        RenderSettings.fogDensity = 0.10f;
-                        break;
-                    case PickUpEffects.FUEL:
-                        playerController.runSpeed = 10f;
-                        animator.SetBool("IsSprint", false);
-                        break;
-                    case PickUpEffects.GHOST:
-                        ghostSheild.SetActive(false);
-                        isGhost = false;
-                        break;
-                    default:
-                        break;
-                }
-                toBeRemoved.Add(statusEffect.type);
-            }
+                expired.Add(statusEffect);
         }
 
-        foreach (var statusType in toBeRemoved)
+        foreach (Effect statusEffect in expired)
         {
-            RemoveEffect(statusType);
+            activeEffects.Remove(statusEffect);
+            if (!HasEffect(statusEffect.type))
+                EndEffect(statusEffect.type);
         }
-        toBeRemoved.Clear();
     }
 
     public void AddEffect(PickUpEffects type, float duration)
     {
+        if (activeEffects == null)
+            activeEffects = new List<Effect>();
+
         Effect newEffect = new Effect();
         newEffect.type = type;
         newEffect.duration = duration;
         newEffect.timeRemaining = 0;
-
         activeEffects.Add(newEffect);
 
-        EventManager.Instance.Invoke(GameEvents.PICK_UP_ADDED, this, newEffect.type);
+        if (EventManager.Instance != null)
+            EventManager.Instance.Invoke(GameEvents.PICK_UP_ADDED, this, newEffect.type);
     }
 
     public void RemoveEffect(PickUpEffects type)
     {
-        Effect toBeRemoved = null;
+        if (activeEffects == null)
+            return;
 
-        foreach (Effect effect in activeEffects)
+        for (int i = 0; i < activeEffects.Count; i++)
         {
-            if (effect.type == type)
+            if (activeEffects[i].type == type)
             {
-                toBeRemoved = effect;
+                activeEffects.RemoveAt(i);
+                return;
             }
-        }
-        if (toBeRemoved != null)
-        {
-            activeEffects.Remove(toBeRemoved);
         }
     }
 
+    private bool HasEffect(PickUpEffects type)
+    {
+        foreach (Effect effect in activeEffects)
+        {
+            if (effect.type == type)
+                return true;
+        }
+        return false;
+    }
+
+    private void ApplyEffect(PickUpEffects type)
+    {
+        switch (type)
+        {
+            case PickUpEffects.TORCH:
+                RenderSettings.fogDensity = 0.05f;
+                break;
+            case PickUpEffects.FUEL:
+                if (playerController != null)
+                    playerController.runSpeed = 15f;
+                if (animator != null)
+                    animator.SetBool("IsSprint", true);
+                break;
+            case PickUpEffects.GHOST:
+                isGhost = true;
+                if (ghostSheild != null)
+                    ghostSheild.SetActive(true);
+                break;
+        }
+    }
+
+    private void EndEffect(PickUpEffects type)
+    {
+        switch (type)
+        {
+            case PickUpEffects.TORCH:
+                RenderSettings.fogDensity = 0.10f;
+                break;
+            case PickUpEffects.FUEL:
+                if (playerController != null)
+                    playerController.runSpeed = 10f;
+                if (animator != null)
+                    animator.SetBool("IsSprint", false);
+                break;
+            case PickUpEffects.GHOST:
+                if (ghostSheild != null)
+                    ghostSheild.SetActive(false);
+                isGhost = false;
+                break;
+        }
+    }
 }

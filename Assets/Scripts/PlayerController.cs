@@ -3,8 +3,7 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     [SerializeField] private Rigidbody rb;
-    [SerializeField] public float runSpeed
-    {  get; set; }
+    public float runSpeed { get; set; }
     [SerializeField] private float JumpForce = 350;
     [SerializeField] private LayerMask GroundMask;
     [SerializeField] private float fallMultiplier = 2.5f; // Multiplier to make falling faster
@@ -15,6 +14,7 @@ public class PlayerController : MonoBehaviour
     private float[] positions = { -3f, 0f, 3f };
 
     private bool jumpActivated = false;
+    private bool isDead = false;
 
     [SerializeField]
      Animator animator;
@@ -23,7 +23,8 @@ public class PlayerController : MonoBehaviour
     private void Start()
     {
         runSpeed = 10f;
-        audioManager.PlaySteptsSFX();
+        if (audioManager != null)
+            audioManager.PlaySteptsSFX();
     }
     private void Awake()
     {
@@ -68,6 +69,8 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (isDead || Time.timeScale == 0f)
+            return;
 
         if ((Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow)) && currentPosIndex > 0)
         {
@@ -98,9 +101,19 @@ public class PlayerController : MonoBehaviour
 
     public void Dead()
     {
+        if (isDead)
+            return;
+
+        isDead = true;
         Time.timeScale = 0f;
-        audioManager.playerSFXSource.Pause();
-        GameManager.Instance.gameOver.SetActive(true);
+        if (audioManager != null && audioManager.playerSFXSource != null)
+            audioManager.playerSFXSource.Pause();
+
+        if (GameManager.Instance == null)
+            return;
+
+        if (GameManager.Instance.gameOver != null)
+            GameManager.Instance.gameOver.SetActive(true);
         GameManager.Instance.DisplayHighScore();
     }
 

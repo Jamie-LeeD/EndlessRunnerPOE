@@ -7,14 +7,23 @@ public class BossManager : MonoBehaviour
 
     private void Awake()
     {
-        if (Instance == null)
+        if (Instance != null && Instance != this)
         {
-            Instance = this; 
+            BossManager previous = Instance;
+            Instance = this;
+            if (previous.gameObject != gameObject)
+                Destroy(previous.gameObject);
         }
         else
         {
-            Destroy(gameObject);
+            Instance = this;
         }
+    }
+
+    private void OnDestroy()
+    {
+        if (Instance == this)
+            Instance = null;
     }
 
     [SerializeField]
@@ -23,31 +32,27 @@ public class BossManager : MonoBehaviour
     [SerializeField]
     GameObject boss;
 
-    Vector3 offset = new Vector3 (7, 0, 8);
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    Vector3 offset = new Vector3(7, 0, 8);
 
     public void spawnBoss()
     {
-        EventManager.Instance.Invoke(GameEvents.BOSS_SPAWN, this);
+        if (EventManager.Instance != null)
+            EventManager.Instance.Invoke(GameEvents.BOSS_SPAWN, this);
+
+        if (player == null || boss == null)
+        {
+            Debug.LogError("BossManager is missing a player or boss reference.");
+            return;
+        }
+
         int index = SceneManager.GetActiveScene().buildIndex;
         if (index == 1)
         {
             Vector3 vecPlayer = player.transform.position;
             Vector3 targetPosition = vecPlayer + offset;
-
             Instantiate(boss, targetPosition, Quaternion.identity, transform);
         }
-        else 
+        else
         {
             offset = new Vector3(0, 0, -2);
             Vector3 vecPlayer = player.transform.position;
